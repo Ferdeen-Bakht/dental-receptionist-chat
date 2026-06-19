@@ -33,7 +33,7 @@ function Index() {
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any | null>(null);
   const transcriptBufferRef = useRef<string>("");
   const inCall = state !== "idle";
 

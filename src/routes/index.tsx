@@ -86,7 +86,7 @@ function Index() {
     recognition.interimResults = true;
     recognition.lang = "en-US";
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: any) => {
       let finalTranscript = "";
       let interimTranscript = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -102,7 +102,7 @@ function Index() {
       }
     };
 
-    recognition.onerror = (e: SpeechRecognitionErrorEvent) => {
+    recognition.onerror = (e: any) => {
       if (e.error === "no-speech" || e.error === "aborted") return;
       console.error("Speech recognition error:", e.error);
     };

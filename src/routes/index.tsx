@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const WEBHOOK_URL = "https://tamatoscloud.app.n8n.cloud/webhook-test/6404fe0f-aa6a-4e5a-a71c-81a6fcb606af";
+const WEBHOOK_URL = "https://tamatoscloud.app.n8n.cloud/webhook/6404fe0f-aa6a-4e5a-a71c-81a6fcb606af";
 
 type CallState = "idle" | "listening" | "thinking" | "speaking";
 

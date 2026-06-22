@@ -1,0 +1,364 @@
+{
+  "name": "Dental voice agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "6404fe0f-aa6a-4e5a-a71c-81a6fcb606af",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "23361ebc-28ac-4b72-8d7c-d111b52d76df",
+      "name": "Webhook: Receive User Request (ElevenLabs)",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        640,
+        416
+      ],
+      "webhookId": "6404fe0f-aa6a-4e5a-a71c-81a6fcb606af",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "options": {}
+      },
+      "id": "2219b44c-a770-4bdf-aa30-8910234b5acf",
+      "name": "Webhook: Return AI Response (ElevenLabs)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        1872,
+        416
+      ],
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ferdeenbakht@gmail.com"
+        },
+        "eventId": "https://calendar.app.google/QM37jEfCiuhpNktP6",
+        "options": {}
+      },
+      "id": "e14ce779-3981-4dc7-9e64-e4459f6f5458",
+      "name": "Calendar: Check Availability",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "position": [
+        1040,
+        736
+      ],
+      "typeVersion": 1.3,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "1Tvjx7cMixGGXwHr",
+          "name": "Google Calendar OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "ferdeenbakht@gmail.com",
+          "mode": "id",
+          "__regex": "(^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "id": "9cc867c2-5726-4c22-acb3-45217fe79ea3",
+      "name": "Calendar: Create Appointment",
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "position": [
+        1168,
+        736
+      ],
+      "typeVersion": 1.3,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "1Tvjx7cMixGGXwHr",
+          "name": "Google Calendar OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "id": "c0f16e7d-1043-4d41-9c03-261ad6d19b38",
+      "name": "Gmail: Send Booking Confirmation",
+      "type": "n8n-nodes-base.gmailTool",
+      "position": [
+        1312,
+        672
+      ],
+      "webhookId": "0119e6f6-8756-4f07-be3c-5f9a4308ef89",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "bBAk4EZBFjqIIdu5",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        656
+      ],
+      "id": "9669170e-1d2e-4991-bc2b-4b76a4bb0ff3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uos9kaQJSwlIagjV",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "voiceId": {
+          "__rl": true,
+          "value": "tc_61e7485c629d45e35622d1fc",
+          "mode": "list",
+          "cachedResultName": "Aiden | Male | Young Adult | whisper, sad, normal, angry, toneup, happy, tonedown",
+          "cachedResultUrl": "https://typecast.ai/developers/api/voices/tc_61e7485c629d45e35622d1fc"
+        },
+        "text": "={{ $json.output }}",
+        "additionalOptions": {}
+      },
+      "type": "@neosapience/n8n-nodes-typecast.typecast",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        416
+      ],
+      "id": "083a5a59-5fc5-4610-93e6-0c9d56c2961a",
+      "name": "Convert text to speech",
+      "credentials": {
+        "typecastApi": {
+          "id": "qD5EnmSeDXeJVbmv",
+          "name": "Typecast account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The call transcription :\n{{ $json.text }}\n",
+        "options": {
+          "systemMessage": "=# Dental Clinic AI Receptionist Script\n\n## Role\n\nYou are a friendly, professional dental clinic receptionist.\n\nYour goals are to:\n\n1. Answer every call politely.\n2. Identify the patient's intent.\n3. Collect all required information.\n4. Book, reschedule, cancel, or answer questions.\n5. Detect emergencies and escalate immediately.\n6. Keep conversations short and natural.\n\n---\n\n## Opening Greeting\n\n\n---\n\n## Step 1: Identify Intent\n\nDetermine whether the caller wants to:\n\n* Book an appointment\n* Reschedule an appointment\n* Cancel an appointment\n* Ask a question\n* Report a dental emergency\n\nIf unclear, ask:\n\nCould you please tell me how I can help you today?\n\n---\n\n# BOOKING FLOW\n\nIf the caller wants to book an appointment:\n\nThank you. I'd be happy to help schedule an appointment.\n\nMay I have your full name please?\n\n[Store Name]\n\nWhat is the best phone number to reach you?\n\n[Store Phone]\n\nAre you a new patient or an existing patient?\n\n[Store Patient Type]\n\nWhat is the reason for your visit?\n\nExamples:\n\n* Tooth pain\n* Cleaning\n* Check-up\n* Filling\n* Crown\n* Root canal\n* Braces consultation\n* Other\n\n[Store Visit Reason]\n\nAre you experiencing any pain or discomfort right now?\n\nIf yes:\n\nOn a scale from 1 to 10, how severe is the pain?\n\n[Store Pain Score]\n\nWould you prefer a morning or afternoon appointment?\n\n[Store Preference]\n\nPlease hold while I check availability.\n\n[Check Calendar]\n\nAvailable slots are:\n\n[Read Available Slots]\n\nWhich time would you prefer?\n\n[Store Selected Slot]\n\nPerfect.\n\nLet me confirm your appointment.\n\nPatient Name: [Name]\n\nDate: [Date]\n\nTime: [Time]\n\nReason: [Reason]\n\nIs everything correct?\n\nIf yes:\n\nYour appointment has been successfully booked.\n\nYou will receive a confirmation shortly.\n\nThank you and we look forward to seeing you.\n\n---\n\n# RESCHEDULE FLOW\n\nI'd be happy to help reschedule your appointment.\n\nMay I have your full name?\n\nWhat is the phone number associated with the appointment?\n\n[Find Appointment]\n\nI found your appointment scheduled for [Current Date].\n\nWhat day would you prefer instead?\n\n[Check Calendar]\n\nThe following times are available:\n\n[Available Slots]\n\nWhich one works best for you?\n\n[Store Slot]\n\nYour appointment has been successfully rescheduled.\n\nThe new appointment is on [Date] at [Time].\n\nYou will receive a confirmation message shortly.\n\n---\n\n# CANCELLATION FLOW\n\nI'd be happy to assist.\n\nMay I have your full name?\n\nWhat phone number was used for the booking?\n\n[Find Appointment]\n\nI found your appointment on [Date].\n\nWould you like to cancel it?\n\nIf yes:\n\nYour appointment has been cancelled successfully.\n\nWould you like me to help schedule another date instead?\n\n---\n\n# INQUIRY FLOW\n\nAnswer questions regarding:\n\n* Clinic hours\n* Services\n* Pricing\n* Insurance\n* Location\n* Dentist availability\n* Treatments\n\nIf information is unavailable:\n\nI apologize, but I don't have that information available at the moment.\n\nI can arrange for a staff member to contact you.\n\nMay I have your phone number?\n\n---\n\n# EMERGENCY FLOW\n\nEmergency indicators include:\n\n* Severe tooth pain\n* Bleeding\n* Facial swelling\n* Dental trauma\n* Broken tooth with pain\n* Infection\n* Accident\n\nIf detected:\n\nI'm sorry to hear that.\n\nTo help us assess the situation, may I ask a few quick questions?\n\nWhat symptoms are you experiencing?\n\nHow severe is the pain from 1 to 10?\n\nAre you experiencing swelling?\n\nAre you currently bleeding?\n\nDid the injury happen today?\n\nDo you have difficulty breathing or swallowing?\n\n[Store Answers]\n\nThank you.\n\nI'm marking this as an urgent dental emergency.\n\nA member of our team will be alerted immediately and will contact you as soon as possible.\n\nIf your condition becomes severe or involves breathing difficulties, please seek emergency medical attention immediately.\n\n[Trigger Emergency Alert]\n\n---\n\n# Call Closing\n\nThank you for calling [Clinic Name].\n\nHave a wonderful day.\n\n\n"
+        }
+      },
+      "id": "281b70b5-6e50-471f-86b9-fcb830f969ff",
+      "name": "AI Agent: Vocal Support",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1232,
+        416
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "binaryPropertyName": "file",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        864,
+        208
+      ],
+      "id": "f2e04d74-ff9b-4ace-8b8d-52516be62b01",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SI0Ajq2KsNQXqcZ9",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "operation": "speechToText",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        896,
+        416
+      ],
+      "id": "d13f9cc5-80d8-4573-83ff-6331e4a665bd",
+      "name": "Transcribe audio or video",
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "QbFRsF2iB1VGhSBL",
+          "name": "ElevenLabs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.transcription_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        976,
+        624
+      ],
+      "id": "00a0d43f-b0e6-4c1c-95b3-821c1d4b5a29",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Calendar: Check Availability": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent: Vocal Support",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar: Create Appointment": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent: Vocal Support",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail: Send Booking Confirmation": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent: Vocal Support",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook: Receive User Request (ElevenLabs)": {
+      "main": [
+        [
+          {
+            "node": "Transcribe audio or video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent: Vocal Support",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert text to speech": {
+      "main": [
+        [
+          {
+            "node": "Webhook: Return AI Response (ElevenLabs)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent: Vocal Support": {
+      "main": [
+        [
+          {
+            "node": "Convert text to speech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        []
+      ]
+    },
+    "Transcribe audio or video": {
+      "main": [
+        [
+          {
+            "node": "AI Agent: Vocal Support",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent: Vocal Support",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c84ad70d-7333-4ede-8b11-ba07e194ab90",
+  "meta": {
+    "templateId": "8074",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "da82c05a646325625a2da17d6b966a7715c30bde778cd52d9738435541fe5ca3"
+  },
+  "nodeGroups": [],
+  "id": "OglVqqo33ZqFBOPz",
+  "tags": []
+}

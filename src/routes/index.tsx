@@ -43,7 +43,7 @@ function Index() {
       audioRef.current.pause();
       audioRef.current = null;
     }
-  } ];
+  };
 
   const endCall = () => {
     cleanup();

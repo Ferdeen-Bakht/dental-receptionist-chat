@@ -19,7 +19,7 @@ const WEBHOOK_URL = "https://tamatoscloud.app.n8n.cloud/webhook-test/6404fe0f-aa
 type CallState = "idle" | "listening" | "thinking" | "speaking";
 
 function Index() {
-  const [state, setState] = useState<Call meisten>("idle");
+  const [state, setState] = useState<CallState>("idle");
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
